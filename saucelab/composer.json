@@ -1,0 +1,6 @@
+{
+    "require": {
+        "sauce/sausage": ">=0.14.0",
+        "brianium/paratest": "dev-master"
+    }	
+}

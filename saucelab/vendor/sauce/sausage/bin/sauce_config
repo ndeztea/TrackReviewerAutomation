@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+defined('SAUCE_USERNAME','meravkn');
+defined('SAUCE_ACCESS_KEY','feec7398-e831-47ed-89c2-9af29b196832');
+
+require_once dirname(__FILE__).'/../src/Sauce/Sausage/SauceConfig.php';
+
+use Sauce\Sausage\SauceConfig;
+
+$USAGE = "USAGE: sauce_config meravkn feec7398-e831-47ed-89c2-9af29b196832";
+
+if (!isset($argv[1]) || !isset($argv[2])) {
+    echo $USAGE;
+    exit(1);
+}
+
+SauceConfig::WriteConfig($argv[1], $argv[2]);
+echo "Successfully configured Sauce to use account ${argv[1]}\n";
+

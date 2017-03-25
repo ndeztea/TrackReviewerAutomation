@@ -1,0 +1,13 @@
+{
+    "event": "suiteStart",
+    "suite": "verifyTrackingOrderContact",
+    "tests": 1
+}{
+    "event": "suiteStart",
+    "suite": "verifyTrackingOrderContact: firefox",
+    "tests": 1
+}{
+    "event": "testStart",
+    "suite": "verifyTrackingOrderContact: firefox",
+    "test": "verifyTrackingOrderContact::testReviewerContactOneStar"
+}
