@@ -52,20 +52,17 @@
 				$this->select($this->byCssSelector('.tiny > select[name="itemsPerPage"]'))->selectOptionByValue('100');
 				$this->byCssSelector('.myo_list_orders_search_form > table > tbody > tr > td:nth-child(4) input')->click();
 			}else{
+				//$this->byXPath('//a[@class="myo_list_orders_link"][text()="Next"]')->click();
 				try{
 					$this->byXPath('//a[@class="myo_list_orders_link"][text()="Next"]')->click();
 				}catch(exception $e){
-					echo 'cant find the data';
+					echo 'cant find the data : '.$reviewerID.'==';
 					
 				}
-				
 			}
 			
-			$this->waitForIdGone('_myoLO_searchOrdersInProgressLoadingImage',10);
-
-			$source = $this->source();
-			$source = strtolower($source);
-			$text = strtolower($texts);
+			sleep(5);
+			
 			/*
 			if ( strpos((string)$source,$reviewerID) == FALSE){
 				$this->_getOrderId($reviewerID, true);
@@ -106,6 +103,8 @@
 		
 
 		public function testReviewerContactOneStar(){
+			$this->startTestCase('testReviewerContactOneStar','Get Reviwer contact from 1 star');
+			
 			$this->connection =  mysql_connect(':/Applications/MAMP/tmp/mysql/mysql.sock','root','root');
 			if(!$this->connection){
 				echo 'cant connect';
@@ -116,15 +115,14 @@
 				exit;
 			}
 
-			$this->startTestCase('testReviewerContactOneStar','Get Reviwer contact from 1 star');
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=1');
-			while ($row = mysql_fetch_array($sql, MYSQL_ASSOC)) {
+			$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating <4 order BY reviewDate DESC') or die(mysql_error());
+			while ($row = mysql_fetch_array($sql)) {
 			   $this->_getOrderId($row['reviewerID']);
 			}
 
-			$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=2');
+			/*$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=2');
 			while ($row = mysql_fetch_array($sql, MYSQL_ASSOC)) {
 			   $this->_getOrderId($row['reviewerID']);
 			}
@@ -132,7 +130,7 @@
 			$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=3');
 			while ($row = mysql_fetch_array($sql, MYSQL_ASSOC)) {
 			   $this->_getOrderId($row['reviewerID']);
-			}
+			}*/
 			
 		}
 	}
