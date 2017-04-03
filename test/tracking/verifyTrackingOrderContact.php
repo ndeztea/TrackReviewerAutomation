@@ -26,7 +26,7 @@
 
 
 		public function _getOrderId($reviewerID,$nextPage=false){
-			$this->connection =  mysql_connect(':/Applications/MAMP/tmp/mysql/mysql.sock','root','root');
+			$this->connection =  mysql_connect('localhost','root','');
 			if(!$this->connection){
 				echo 'cant connect';
 				exit;
@@ -37,6 +37,7 @@
 			}
 
 
+			$noNext = false;
 			if($nextPage==false){
 				// select adv search
 				$this->url($this->advSearchPage);
@@ -56,8 +57,7 @@
 				try{
 					$this->byXPath('//a[@class="myo_list_orders_link"][text()="Next"]')->click();
 				}catch(exception $e){
-					echo 'cant find the data : '.$reviewerID.'==';
-					
+					$noNext = true;
 				}
 			}
 			
@@ -70,16 +70,19 @@
 				ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
 			}*/
 
-			try{
-				ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
-				sleep(2);
-				// click the orderID
-				$orderID = $this->byId('OrderID')->attribute('value');
-				$this->byXPath('//a/strong[text()="'.$orderID.'"]')->click();
-			}catch(exception $e){
-				ScriptHelpers::execute('$(\'#OrderID\').remove();');
-				$this->_getOrderId($reviewerID, true);
+			if($noNext){
+				try{
+					ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
+					sleep(2);
+					// click the orderID
+					$orderID = $this->byId('OrderID')->attribute('value');
+					$this->byXPath('//a/strong[text()="'.$orderID.'"]')->click();
+				}catch(exception $e){
+					ScriptHelpers::execute('$(\'#OrderID\').remove();');
+					$this->_getOrderId($reviewerID, true);
+				}
 			}
+			
 			
 
 			// now get the user information
@@ -89,13 +92,12 @@
 				$record['orderDate'] = $this->byId('myo-order-details-purchase-date')->text();
 				$record['address'] = $this->byId('myo-order-details-buyer-address')->text();
 				$record['contact'] = $this->byId('contact_buyer_link')->attribute('href');
-				print_r($record);
-
+				
 				$sql = "UPDATE reviewer_contact SET orderID='".$record['orderID']."',orderDate='".$record['orderDate']."',contact='".$record['contact']."' WHERE reviewerID='".$record['reviewerID']."'	;";
-				echo $sql;
 				mysql_query($sql);
 			}catch(exception $e){
 				//
+				echo $reviewerID.'-';
 			}
 			
 		}

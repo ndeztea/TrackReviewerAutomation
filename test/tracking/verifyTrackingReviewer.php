@@ -187,6 +187,15 @@
 			$this->_getReviewID();
 		}
 
+		/**
+		* Get Reviwer contact and then save to database (four star)
+		*
+		*/
+		public function testGetReviewerContactFiveStar(){
+			$this->rating = 5;
+			$this->_getReviewID();
+		}
+
 		/*public function testOneStartReviwerContact(){
 			$this->startTestCase('testOneStartReviwerContact','Get Reviwer contact from 1 star');
 
