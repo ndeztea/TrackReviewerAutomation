@@ -35,7 +35,7 @@
 				echo 'cant select BD';
 				exit;
 			}
-
+			
 			$reviewerID = $review['reviewerID'];
 			$reviewDate = $review['reviewDate'];
 			$noNext = false;
@@ -92,7 +92,7 @@
 					$this->byXPath('//a/strong[text()="'.$orderID.'"]')->click();
 				}catch(exception $e){
 					ScriptHelpers::execute('$(\'#OrderID\').remove();');
-					$this->_getOrderId($reviewerID, true);
+					$this->_getOrderId($review, true);
 				}
 			}
 			
@@ -132,7 +132,7 @@
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 2 order BY reviewDate DESC') or die(mysql_error());
+			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 3 order BY reviewDate DESC') or die(mysql_error());
 			while ($row = mysql_fetch_array($sql)) {
 			   $this->_getOrderId($row);
 			}
