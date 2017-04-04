@@ -132,7 +132,7 @@
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 2 order BY reviewDate DESC LIMIT 1') or die(mysql_error());
+			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 2 order BY reviewDate DESC') or die(mysql_error());
 			while ($row = mysql_fetch_array($sql)) {
 			   $this->_getOrderId($row);
 			}
