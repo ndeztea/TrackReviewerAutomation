@@ -25,7 +25,7 @@
 		}
 
 
-		public function _getOrderId($reviewerID,$nextPage=false){
+		public function _getOrderId($review,$nextPage=false){
 			$this->connection =  mysql_connect('localhost','root','');
 			if(!$this->connection){
 				echo 'cant connect';
@@ -36,7 +36,8 @@
 				exit;
 			}
 
-
+			$reviewerID = $review['reviewerID'];
+			$reviewDate = $review['reviewDate'];
 			$noNext = false;
 			if($nextPage==false){
 				// select adv search
@@ -44,9 +45,18 @@
 				$this->select($this->byName('searchType'))->selectOptionByValue('ASIN');
 				$this->byName('searchKeyword')->value($this->asinID);
 				//$this->select($this->byName('preSelectedRange'))->selectOptionByValue('365');
+				
+				// calculate date
+				//$reviewDateFormatBegin = date('Y-m-d',strtotime($reviewDate));
+				$reviewDateFormatEnd = date('n/j/y',strtotime($reviewDate));
 				$this->byId('exactDateBegin')->click();
 				$this->byId('exactDateBegin')->clear();
-				$this->byId('exactDateBegin')->value('4/1/15');
+				$this->byId('exactDateBegin')->value('1/1/15');
+				$this->byId('exactDateEnd')->click();
+				$this->byId('exactDateEnd')->clear();
+				$this->byId('exactDateEnd')->value($reviewDateFormatEnd);
+
+
 				//$this->select($this->byId('_myoSO_statusFilterSelect'))->selectOptionByValue('Shipped');
 				//$this->byId('_myoSO_ShowPendingCheckBox')->click();
 
@@ -73,7 +83,7 @@
 				ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
 			}*/
 
-			if($noNext){
+			if($noNext==false){
 				try{
 					ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
 					sleep(2);
@@ -122,9 +132,9 @@
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating < 2 order BY reviewDate DESC') or die(mysql_error());
+			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 2 order BY reviewDate DESC LIMIT 1') or die(mysql_error());
 			while ($row = mysql_fetch_array($sql)) {
-			   $this->_getOrderId($row['reviewerID']);
+			   $this->_getOrderId($row);
 			}
 
 			/*$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=2');
