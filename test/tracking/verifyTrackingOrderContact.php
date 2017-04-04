@@ -45,6 +45,7 @@
 				$this->byName('searchKeyword')->value($this->asinID);
 				//$this->select($this->byName('preSelectedRange'))->selectOptionByValue('365');
 				$this->byId('exactDateBegin')->click();
+				$this->byId('exactDateBegin')->clear();
 				$this->byId('exactDateBegin')->value('4/1/15');
 				//$this->select($this->byId('_myoSO_statusFilterSelect'))->selectOptionByValue('Shipped');
 				//$this->byId('_myoSO_ShowPendingCheckBox')->click();
