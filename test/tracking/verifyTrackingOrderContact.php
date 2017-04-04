@@ -43,9 +43,11 @@
 				$this->url($this->advSearchPage);
 				$this->select($this->byName('searchType'))->selectOptionByValue('ASIN');
 				$this->byName('searchKeyword')->value($this->asinID);
-				$this->select($this->byName('preSelectedRange'))->selectOptionByValue('365');
-				$this->select($this->byId('_myoSO_statusFilterSelect'))->selectOptionByValue('Shipped');
-				$this->byId('_myoSO_ShowPendingCheckBox')->click();
+				//$this->select($this->byName('preSelectedRange'))->selectOptionByValue('365');
+				$this->byId('exactDateBegin')->click();
+				$this->byId('exactDateBegin')->value('4/1/15');
+				//$this->select($this->byId('_myoSO_statusFilterSelect'))->selectOptionByValue('Shipped');
+				//$this->byId('_myoSO_ShowPendingCheckBox')->click();
 
 				$this->byName('Search')->click();
 
@@ -107,7 +109,7 @@
 		public function testReviewerContactOneStar(){
 			$this->startTestCase('testReviewerContactOneStar','Get Reviwer contact from 1 star');
 			
-			$this->connection =  mysql_connect(':/Applications/MAMP/tmp/mysql/mysql.sock','root','root');
+			$this->connection =  mysql_connect('localhost','root','');
 			if(!$this->connection){
 				echo 'cant connect';
 				exit;
@@ -119,7 +121,7 @@
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating <4 order BY reviewDate DESC') or die(mysql_error());
+			$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating < 2 order BY reviewDate DESC') or die(mysql_error());
 			while ($row = mysql_fetch_array($sql)) {
 			   $this->_getOrderId($row['reviewerID']);
 			}
