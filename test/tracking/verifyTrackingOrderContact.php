@@ -82,7 +82,7 @@
 			}else{
 				ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
 			}*/
-
+			$orderID = 'undefined';
 			if($noNext==false){
 				try{
 					ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
@@ -99,19 +99,42 @@
 			
 
 			// now get the user information
-			try{
-				$record['reviewerID'] = $reviewerID;
-				$record['orderID'] = $orderID;
-				$record['orderDate'] = $this->byId('myo-order-details-purchase-date')->text();
-				$record['address'] = $this->byId('myo-order-details-buyer-address')->text();
-				$record['contact'] = $this->byId('contact_buyer_link')->attribute('href');
-				
-				$sql = "UPDATE reviewer_contact SET orderID='".$record['orderID']."',orderDate='".$record['orderDate']."',contact='".$record['contact']."' WHERE reviewerID='".$record['reviewerID']."'	;";
-				mysql_query($sql);
-			}catch(exception $e){
-				//
-				echo $reviewerID.'-';
+			if($orderID!='undefined'){
+				try{
+					sleep(2);
+					$record['reviewerID'] = $reviewerID;
+					$record['orderID'] = $orderID;
+
+					echo '####in-'.$this->url().'#####';
+					
+					try{
+						$record['orderDate'] = $this->byId('myo-order-details-purchase-date')->text();
+					}catch(exception $e){
+						echo '|||'.$reviewerID.'(order date empty)|||';
+						$record['orderDate'] = '';
+					}
+
+					try{
+						$record['address'] = $this->byId('myo-order-details-buyer-address')->text();
+					}catch(exception $e){
+						echo '|||'.$reviewerID.'(address empty)|||';
+						$record['address'] = '';
+					}
+
+					try{
+						$record['contact'] = $this->byId('contact_buyer_link')->attribute('href');
+					}catch(exception $e){
+						$record['contact'] = $this->url();
+					}
+					
+					$sql = "UPDATE reviewer_contact SET orderID='".$record['orderID']."',orderDate='".$record['orderDate']."',contact='".$record['contact']."' WHERE reviewerID='".$record['reviewerID']."'	;";
+					mysql_query($sql);
+				}catch(exception $e){
+					//
+					echo $reviewerID.'-';
+				}
 			}
+			
 			
 		}
 
@@ -132,7 +155,7 @@
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating = "x"  order BY reviewDate DESC') or die(mysql_error());
+			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 3  order BY reviewDate DESC') or die(mysql_error());
 			while ($row = mysql_fetch_array($sql)) {
 			   $this->_getOrderId($row);
 			}
