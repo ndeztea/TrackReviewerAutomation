@@ -85,6 +85,7 @@
 			$orderID = 'undefined';
 			if($noNext==false){
 				try{
+					sleep(5);
 					ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
 					sleep(2);
 					// click the orderID
@@ -105,7 +106,7 @@
 					$record['reviewerID'] = $reviewerID;
 					$record['orderID'] = $orderID;
 
-					echo '####in-'.$this->url().'#####';
+					echo '####in-'.$reviewerID.'-'.$this->url().'#####';
 					
 					try{
 						$record['orderDate'] = $this->byId('myo-order-details-purchase-date')->text();
@@ -128,10 +129,11 @@
 					}
 					
 					$sql = "UPDATE reviewer_contact SET orderID='".$record['orderID']."',orderDate='".$record['orderDate']."',contact='".$record['contact']."' WHERE reviewerID='".$record['reviewerID']."'	;";
+					echo $sql;
 					mysql_query($sql);
 				}catch(exception $e){
 					//
-					echo $reviewerID.'-';
+					echo '!!ERRRO ('.$reviewerID.')!!';
 				}
 			}
 			
@@ -155,7 +157,7 @@
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 3  order BY reviewDate DESC') or die(mysql_error());
+			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 3 AND contact="" order BY reviewDate DESC') or die(mysql_error());
 			while ($row = mysql_fetch_array($sql)) {
 			   $this->_getOrderId($row);
 			}

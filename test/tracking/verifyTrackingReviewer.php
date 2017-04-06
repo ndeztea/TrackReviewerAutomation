@@ -63,8 +63,7 @@
 			$countPage = $this->byCssSelector($css)->text();
 			$this->arrReviewerId = array();
 			for($page=1;$page<$countPage;$page++){
-				$css = '#cm_cr-pagination_bar > ul.a-pagination > li.a-last a';
-				$this->byCssSelector($css)->click();
+				
 				sleep(4);
 
 				// each page
@@ -72,15 +71,17 @@
 				$index = 0; 
 				for($a=1;$a<=$countElement;$a++){
 					// get the review ID
-					try{
+					//try{
 						$xPath = '//div[@id="cm_cr-review_list"]/div['.$a.']';
 						$reviewID = $this->byXPath($xPath)->attribute('id');
 						if(!empty($reviewID)){
-							$css = '#'.$reviewID .' .author';
+							$css = '#'.$reviewID .' .review-byline a.a-size-base.a-link-normal.author';
 							$reviewIDHref = $this->byCssSelector($css)->attribute('href');
 							$arr = explode('/',$reviewIDHref);
+							print_r($arr);
 
 							// collect data
+							$name = $this->byCssSelector($css)->text();
 							$reviewDate = $this->byCssSelector('#'.$reviewID .' .review-date')->text();
 							$reviewDate = str_replace('on ', '', $reviewDate);
 							$reviewDateFormat = date('Y-m-d',strtotime($reviewDate));
@@ -91,20 +92,22 @@
 							$reviewContent = $this->arrReviewerId[$index]['reviewContent']  = $this->byCssSelector('#'.$reviewID .' .review-data .review-text')->text();
 							$rating = $this->arrReviewerId[$index]['rating']  = $this->rating;
 							
-							$sql = "REPLACE INTO  reviewer_contact(reviewerID,ASIN,reviewDate,reviewContent,rating,product) VALUES('$reviewID','$asinID','$reviewDate','$reviewContent','$rating','deodorant');";
-							echo $sql;
+							$sql = "REPLACE INTO  reviewer_contact(reviewerID,name,ASIN,reviewDate,reviewContent,rating,product) VALUES('$reviewerID','".addslashes($name)."','$asinID','$reviewDate','".addslashes($reviewContent)."','$rating','deodorant');";
+							//echo $sql;
 							mysql_query($sql);
 
 							$index++;
 						}
-					}catch(exception $e){
+					//}catch(exception $e){
 						//
-					}
+					//}
 				}
+				$css = '#cm_cr-pagination_bar > ul.a-pagination > li.a-last a';
+				$this->byCssSelector($css)->click();
 			}
 
 			// save to DB
-			print_r($this->arrReviewerId);
+			//print_r($this->arrReviewerId);
 			
 		}	
 
@@ -113,47 +116,12 @@
 		* Get Reviwer contact and then save to database (one star)
 		*
 		*/
-		public function testGetReviewerContactOneStar(){
-			$this->rating = 1;
-			$this->_getReviewID();
-		}
-
-		/**
-		* Get Reviwer contact and then save to database (two star)
-		*
-		*/
-		public function testGetReviewerContactTwoStar(){
+		public function testGetReviewerContact(){
 			$this->rating = 2;
 			$this->_getReviewID();
 		}
 
-		/**
-		* Get Reviwer contact and then save to database (three star)
-		*
-		*/
-		public function testGetReviewerContactThreeStar(){
-			$this->rating = 3;
-			$this->_getReviewID();
-		}
-
-		/**
-		* Get Reviwer contact and then save to database (four star)
-		*
-		*/
-		public function testGetReviewerContactFourStar(){
-			$this->rating = 4;
-			$this->_getReviewID();
-		}
-
-		/**
-		* Get Reviwer contact and then save to database (four star)
-		*
-		*/
-		public function testGetReviewerContactFiveStar(){
-			$this->rating = 5;
-			$this->_getReviewID();
-		}
-
+		
 		/*public function testOneStartReviwerContact(){
 			$this->startTestCase('testOneStartReviwerContact','Get Reviwer contact from 1 star');
 
