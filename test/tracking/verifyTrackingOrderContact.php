@@ -26,12 +26,12 @@
 
 
 		public function _getOrderId($review,$nextPage=false){
-			$this->connection =  mysql_connect('localhost','root','');
+			$this->connection =  mysql_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
 			if(!$this->connection){
 				echo 'cant connect';
 				exit;
 			}
-			if(!mysql_select_db('db_amazon_tracking')){
+			if(!mysql_select_db(MYSQL_DB)){
 				echo 'cant select BD';
 				exit;
 			}
@@ -120,19 +120,19 @@
 		public function testReviewerContactOneStar(){
 			$this->startTestCase('testReviewerContactOneStar','Get Reviwer contact from 1 star');
 			
-			$this->connection =  mysql_connect('localhost','root','');
+			$this->connection =  mysql_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
 			if(!$this->connection){
 				echo 'cant connect';
 				exit;
 			}
-			if(!mysql_select_db('db_amazon_tracking')){
+			if(!mysql_select_db(MYSQL_DB)){
 				echo 'cant select BD';
 				exit;
 			}
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 3 order BY reviewDate DESC') or die(mysql_error());
+			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating = "x" and reviewerID="A3LKPFWGRVJBZ" order BY reviewDate DESC') or die(mysql_error());
 			while ($row = mysql_fetch_array($sql)) {
 			   $this->_getOrderId($row);
 			}

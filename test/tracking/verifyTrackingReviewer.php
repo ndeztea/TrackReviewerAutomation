@@ -24,12 +24,12 @@
 		*/
 		public function _getReviewID(){
 			// connect to mysql
-			$this->connection =  mysql_connect(':/Applications/MAMP/tmp/mysql/mysql.sock','root','root');
+			$this->connection =  mysql_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
 			if(!$this->connection){
 				echo 'cant connect';
 				exit;
 			}
-			if(!mysql_select_db('db_amazon_tracking')){
+			if(!mysql_select_db(MYSQL_DB)){
 				echo 'cant select BD';
 				exit;
 			}
@@ -108,49 +108,7 @@
 			
 		}	
 
-		public function _getOrderId($reviewerID,$nextPage=false){
-			if($nextPage==false){
-				// select adv search
-				$this->url($this->advSearchPage);
-				$this->select($this->byName('searchType'))->selectOptionByValue('ASIN');
-				$this->byName('searchKeyword')->value($this->asinID);
-				$this->select($this->byName('preSelectedRange'))->selectOptionByValue('7');
-				$this->byName('Search')->click();
-
-				// select all item
-				$this->select($this->byCssSelector('.tiny < select.itemsPerPage'))->selectOptionByValue('100');
-				$this->byCssSelector('.myo_list_orders_search_form > table > tbody > tr > td:nth-child(4) input')->click();
-			}else{
-				$this->byXPath('//a[@class="myo_list_orders_link"][text()="Next"]')->click();
-			}
-			
-			$this->waitForIdGone('_myoLO_searchOrdersInProgressLoadingImage',10);
-
-			$source = $this->source();
-			$source = strtolower($source);
-			$text = strtolower($texts);
-			if ( strpos((string)$source,$reviewerID) == FALSE){
-				$this->_getOrderId($reviewerID, true);
-			}else{
-				ScriptHelpers::execute('var OrderID = $(\'input[class="cust-id"][value="'.$reviewerID.'"]\').prev().prev().prev().attr(\'value\'); $(\'<input type="text" id="OrderID" value="\'+OrderID+\'">\').appendTo(\'body\')');
-			}
-
-			// click the orderID
-			$orderID = $this->byId('orderID')->attribute('value');
-			$this->byXPath('//a/strong[text()="'.$orderID.'"]')->click();
-
-			// now get the user information
-			$record['ASIN'] = $this->asinID;
-			$record['product'] = $this->product;
-			$record['rating'] = $this->rating;
-			$record['reviewID'] = $this->reviewID;
-			$record['reviewerID'] = $this->reviewerID;
-
-			print_r($record);
-
-
-		}
-
+		
 		/**
 		* Get Reviwer contact and then save to database (one star)
 		*

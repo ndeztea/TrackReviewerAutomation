@@ -17,6 +17,11 @@
         <const name="TEST_BROWSER1" value="firefox"/>
         <const name="TEST_BROWSER2" value="chrome"/>
         <const name="TEST_BROWSER3" value="ie"/>
+
+        <const name="MYSQL_HOST" value="localhost"/>
+        <const name="MYSQL_USERNAME" value="root"/>
+        <const name="MYSQL_PASSWORD" value=""/>
+        <const name="MYSQL_DB" value="db_amazon_tracking"/>
         
     </php>
 
