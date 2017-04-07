@@ -3,7 +3,14 @@
 
 	class verifyTrackingOrderContact extends Core
 	{	
-		var $asinID = 'B01DKQJP2E';
+		var $asinID = 'B012E9DMNQ';
+		/*
+		B012E9DMNQ
+B01DKQJP2E (DONE)
+B01DKQP5KK
+B01DDQXRWU
+B01DKQAXC0
+*/
 		var $product = 'Deodorant';
 		var $username = 'dimas@ijoomla.com';
 		var $password = 'Soreang123!';
@@ -157,7 +164,7 @@
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE orderID=0 AND rating < 3 AND contact="" order BY reviewDate DESC') or die(mysql_error());
+			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE contact="" AND reviewDate>"2016-04-07" order BY reviewDate DESC') or die(mysql_error());
 			while ($row = mysql_fetch_array($sql)) {
 			   $this->_getOrderId($row);
 			}
