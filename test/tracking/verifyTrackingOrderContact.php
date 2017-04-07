@@ -163,7 +163,7 @@
 
 			$this->rating = 1;
 
-			foreach ($asinIDarr  as $asin) {
+			foreach ($this->asinIDarr  as $asin) {
 				$this->asinID = $asin;
 				$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE contact="" AND reviewDate>"2016-04-07" order BY reviewDate DESC') or die(mysql_error());
 				while ($row = mysql_fetch_array($sql)) {
