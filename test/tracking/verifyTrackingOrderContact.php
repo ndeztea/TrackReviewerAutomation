@@ -5,13 +5,8 @@
 	{	
 		var $asinID = 'B012E9DMNQ';
 		// master ASIN B01DJ7XNJA
-		/*
-		B012E9DMNQ
-B01DKQJP2E (DONE)
-B01DKQP5KK
-B01DDQXRWU
-B01DKQAXC0
-*/
+		var $asinIDarr = array('B012E9DMNQ','B01DKQP5KK','B01DDQXRWU','B01DKQAXC0') ; //B01DKQJP2E (DONE)
+		
 		var $product = 'Deodorant';
 		var $username = 'dimas@ijoomla.com';
 		var $password = 'Soreang123!';
@@ -56,10 +51,13 @@ B01DKQAXC0
 				
 				// calculate date
 				//$reviewDateFormatBegin = date('Y-m-d',strtotime($reviewDate));
-				$reviewDateFormatEnd = date('n/j/y',strtotime($reviewDate));
 				$this->byId('exactDateBegin')->click();
 				$this->byId('exactDateBegin')->clear();
-				$this->byId('exactDateBegin')->value('1/1/15');
+				$beginDate = strtotime($reviewDate.'-6 months');
+				$reviewDateFormatBegin =  date('n/j/y',$beginDate);
+				$this->byId('exactDateBegin')->value($reviewDateFormatBegin);
+
+				$reviewDateFormatEnd = date('n/j/y',strtotime($reviewDate));
 				$this->byId('exactDateEnd')->click();
 				$this->byId('exactDateEnd')->clear();
 				$this->byId('exactDateEnd')->value($reviewDateFormatEnd);
@@ -165,10 +163,14 @@ B01DKQAXC0
 
 			$this->rating = 1;
 
-			$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE contact="" AND reviewDate>"2016-04-07" order BY reviewDate DESC') or die(mysql_error());
-			while ($row = mysql_fetch_array($sql)) {
-			   $this->_getOrderId($row);
+			foreach ($asinIDarr  as $asin) {
+				$this->asinID = $asin;
+				$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE contact="" AND reviewDate>"2016-04-07" order BY reviewDate DESC') or die(mysql_error());
+				while ($row = mysql_fetch_array($sql)) {
+				   $this->_getOrderId($row);
+				}
 			}
+			
 
 			/*$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=2');
 			while ($row = mysql_fetch_array($sql, MYSQL_ASSOC)) {
