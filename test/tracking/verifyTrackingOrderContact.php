@@ -4,6 +4,7 @@
 	class verifyTrackingOrderContact extends Core
 	{	
 		var $asinID = 'B012E9DMNQ';
+		// master ASIN B01DJ7XNJA
 		/*
 		B012E9DMNQ
 B01DKQJP2E (DONE)
@@ -135,7 +136,7 @@ B01DKQAXC0
 						$record['contact'] = $this->url();
 					}
 					
-					$sql = "UPDATE reviewer_contact SET orderID='".$record['orderID']."',orderDate='".$record['orderDate']."',contact='".$record['contact']."' WHERE reviewerID='".$record['reviewerID']."'	;";
+					$sql = "UPDATE reviewer_contact SET ASIN='".$this->asinID."',orderID='".$record['orderID']."',orderDate='".$record['orderDate']."',contact='".$record['contact']."' WHERE reviewerID='".$record['reviewerID']."'	;";
 					echo $sql;
 					mysql_query($sql);
 				}catch(exception $e){
