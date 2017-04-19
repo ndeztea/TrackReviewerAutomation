@@ -11,7 +11,7 @@
     <php>
         <includePath>.</includePath>
         <const name="TEST_TIMEZONE" value="Asia/Jakarta"/>
-      
+
          <const name="TEST_BUILD_VERSION" value="4.3"/>
         <const name="TEST_URL" value="https://sellercentral.amazon.com/gp/orders-v2/search/ref=ag_myosearch_apsearch_myo"/>
         <const name="TEST_BROWSER1" value="firefox"/>
@@ -20,9 +20,9 @@
 
         <const name="MYSQL_HOST" value="localhost"/>
         <const name="MYSQL_USERNAME" value="root"/>
-        <const name="MYSQL_PASSWORD" value=""/>
+        <const name="MYSQL_PASSWORD" value="root"/>
         <const name="MYSQL_DB" value="db_amazon_tracking"/>
-        
+
     </php>
 
 
@@ -38,7 +38,7 @@
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
         <log type="json" target="log/test_log.json"/>
         <log type="junit" target="log/test_log.xml" logIncompleteSkipped="false"/>
-         
+
     </logging>
 
 </phpunit>

@@ -1,13 +1,13 @@
-<?php 
+<?php
 	require_once (__DIR__.'/../../library/core.php');
 
 	class verifyTrackingReviewer extends Core
-	{	
+	{
 		var $asinID = 'B01DKQJP2E';
 		var $reviewPage = 'https://www.amazon.com/product-reviews/B01DKQJP2E/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&refRID=19FKR70FR24JJR7C415D&pageNumber=1&sortBy=recent&reviewerType=all_reviews&filterByStar=';
 		var $rating;
 		var $reviewID;
-		
+
 		var $arrReviewerId = array();
 
 		var $connection;
@@ -24,12 +24,12 @@
 		*/
 		public function _getReviewID(){
 			// connect to mysql
-			$this->connection =  mysql_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
+			$this->connection =  mysqli_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
 			if(!$this->connection){
 				echo 'cant connect';
 				exit;
 			}
-			if(!mysql_select_db(MYSQL_DB)){
+			if(!mysqli_select_db($this->connection, MYSQL_DB)){
 				echo 'cant select BD';
 				exit;
 			}
@@ -51,24 +51,24 @@
 				case '5':
 					$this->url($this->reviewPage.'five_star');
 					break;
-				
+
 				default:
 					# code...
 					break;
 			}
-			
 
-			// check ccount page 
+
+			// check ccount page
 			$css = '#cm_cr-pagination_bar > ul.a-pagination > li:nth-child(7) a';
 			$countPage = $this->byCssSelector($css)->text();
 			$this->arrReviewerId = array();
 			for($page=1;$page<$countPage;$page++){
-				
+
 				sleep(4);
 
 				// each page
 				$countElement = count($this->elements($this->using('css selector')->value('#cm_cr-review_list .review')));
-				$index = 0; 
+				$index = 0;
 				for($a=1;$a<=$countElement;$a++){
 					// get the review ID
 					//try{
@@ -91,10 +91,10 @@
 							$reviewDate = $this->arrReviewerId[$index]['reviewDate']  = $reviewDateFormat;
 							$reviewContent = $this->arrReviewerId[$index]['reviewContent']  = $this->byCssSelector('#'.$reviewID .' .review-data .review-text')->text();
 							$rating = $this->arrReviewerId[$index]['rating']  = $this->rating;
-							
+
 							$sql = "REPLACE INTO  reviewer_contact(reviewerID,name,ASIN,reviewDate,reviewContent,rating,product) VALUES('$reviewerID','".addslashes($name)."','$asinID','$reviewDate','".addslashes($reviewContent)."','$rating','deodorant');";
 							//echo $sql;
-							mysql_query($sql);
+							mysqli_query($this->connection, $sql);
 
 							$index++;
 						}
@@ -108,10 +108,10 @@
 
 			// save to DB
 			//print_r($this->arrReviewerId);
-			
-		}	
 
-		
+		}
+
+
 		/**
 		* Get Reviwer contact and then save to database (one star)
 		*
@@ -121,7 +121,7 @@
 			$this->_getReviewID();
 		}
 
-		
+
 		/*public function testOneStartReviwerContact(){
 			$this->startTestCase('testOneStartReviwerContact','Get Reviwer contact from 1 star');
 

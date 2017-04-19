@@ -73,7 +73,7 @@ $testSuite100 = array();
 		}
 
 		function filterResultTestCase(opt){
-			
+
 			if(opt=='all'){
 				$('.testsuite').show();
 				$('.subTestCase').show();
@@ -110,7 +110,7 @@ $testSuite100 = array();
 	<body>
 	<h1>Log Result</h1>
 	<p>
-		Filter : 
+		Filter :
 		<select name="filter"  onchange="filterResult(this)">
 			<option value="all">All result</option>
 			<option value="green">Success Only</option>
@@ -142,8 +142,8 @@ $testSuite100 = array();
 			<th>Errors</th>
 			<th>Time</th>
 		</tr>
-		<?php 
-			$totalSuccess = $arrLogs['testsuite']['@attributes']['tests']-($arrLogs['testsuite']['@attributes']['failures']+$arrLogs['testsuite']['@attributes']['errors']);	
+		<?php
+			$totalSuccess = $arrLogs['testsuite']['@attributes']['tests']-($arrLogs['testsuite']['@attributes']['failures']+$arrLogs['testsuite']['@attributes']['errors']);
 			$percentSuccess = $totalSuccess/$arrLogs['testsuite']['@attributes']['tests']*100;
 			$percentFail = $arrLogs['testsuite']['@attributes']['failures']/$arrLogs['testsuite']['@attributes']['tests']*100;
 			$percentError = $arrLogs['testsuite']['@attributes']['errors']/$arrLogs['testsuite']['@attributes']['tests']*100;
@@ -159,26 +159,26 @@ $testSuite100 = array();
 			<td class="red"><?php echo $arrLogs['testsuite']['@attributes']['errors']?> (<?php echo number_format($percentError,2,'.',',')?>%)</td>
 			<td><?php echo gmdate('H:i:s',$arrLogs['testsuite']['@attributes']['time'])?></td>
 		</tr>
-		
+
 	<?php $a=0;$no=1;foreach($arrLogs['testsuite']['testsuite'] as $rowLogs1):?>
-		<?php 
+		<?php
 			$testSummarySuites1 =  $rowLogs1['@attributes'];
 			$testSuites1 =  $rowLogs1;
 		?>
 		<!--tr>
 			<td colspan="9">&nbsp;</td>
 		</tr-->
-		<?php 
+		<?php
 			$percentError = '0%';
 			$percentSuccess = '0%';
 			$percentFail = '0%';
 			$totalSuccess = 0;
 			if ($testSummarySuites1['tests'] > 0) {
-				$totalSuccess = $testSummarySuites1['tests']-($testSummarySuites1['failures']+$testSummarySuites1['errors']);	
+				$totalSuccess = $testSummarySuites1['tests']-($testSummarySuites1['failures']+$testSummarySuites1['errors']);
 				$percentSuccess = $totalSuccess/$testSummarySuites1['tests']*100;
 				$percentFail = $testSummarySuites1['failures']/$testSummarySuites1['tests']*100;
 				$percentError = $testSummarySuites1['errors']/$testSummarySuites1['tests']*100;
-			} 
+			}
 
 			// get testsuite only xml
 			if($percentSuccess!=100){
@@ -199,12 +199,12 @@ $testSuite100 = array();
 			<td class="red"><?php echo $testSummarySuites1['errors']?> (<?php echo number_format($percentError,2,'.',',')?>%)</td>
 			<td><?php echo gmdate('H:i:s',$testSummarySuites1['time'])?></td>
 		</tr>
-		
-			<?php 
+
+			<?php
 				$subNo = 1;
 
 				if (isset($testSuites1['testsuite'])):
-				foreach ($testSuites1['testsuite'] as $rowLogs2): 
+				foreach ($testSuites1['testsuite'] as $rowLogs2):
 
 					$testSummarySuites2 = $rowLogs2['@attributes'];
 					$totalSuccess = '';
@@ -212,9 +212,9 @@ $testSuite100 = array();
 					$percentFail = '0%';
 					$percentFail = '0%';
 					$percentError = '0%';
-					
-					if ($testSummarySuites2['tests'] > 0) { 
-						$totalSuccess = $testSummarySuites2['tests']-($testSummarySuites2['failures']+$testSummarySuites2['errors']);	
+
+					if ($testSummarySuites2['tests'] > 0) {
+						$totalSuccess = $testSummarySuites2['tests']-($testSummarySuites2['failures']+$testSummarySuites2['errors']);
 						$percentSuccess = $totalSuccess/$testSummarySuites2['tests']*100;
 						$percentFail = $testSummarySuites2['failures']/$testSummarySuites2['tests']*100;
 						$percentError = $testSummarySuites2['errors']/$testSummarySuites2['tests']*100;
@@ -241,9 +241,9 @@ $testSuite100 = array();
 							$testSuite100[$a]['files'][] = 'test\\'.$arr[1];
 						}
 					}
-					
+
 				}
-				
+
 			?>
 			<!--tr>
 				<td colspan="9">&nbsp;</td>
@@ -262,7 +262,7 @@ $testSuite100 = array();
 			<?php if(!empty($rowLogs2Testcase)):?>
 				<?php if(isset($rowLogs2Testcase[0])) { ?>
 					<?php $subNo2=1; foreach($rowLogs2Testcase as $testCases):?>
-					<?php 
+					<?php
 						if(count($rowLogs2Testcase)>1){
 							$testCase = $rowLogs2['testcase'];
 							$summaryTestCase = $testCases['@attributes'];
@@ -270,7 +270,7 @@ $testSuite100 = array();
 							// test description for multiple test
 							$testDescription = explode(":", $testCases['system-out']);
 							$testDescription = trim(str_replace("...", "", $testDescription[1]));
-						
+
 						}else{
 							$testCase = $testCases;
 							$summaryTestCase = $testCases;
@@ -302,7 +302,7 @@ $testSuite100 = array();
 					<?php $subNo2++; endforeach; ?>
 				<?php } else { ?>
 					<?php $subNo2=1; $testCases = $rowLogs2Testcase;?>
-					<?php 
+					<?php
 						if(count($rowLogs2Testcase)>0){
 
 							$testCase = $rowLogs2Testcase;
@@ -311,7 +311,7 @@ $testSuite100 = array();
 							// test description for multiple test
 							$testDescription = explode(":", $testCases['system-out']);
 							$testDescription = trim(str_replace("...", "", $testDescription[1]));
-						
+
 						}else{
 							$testCase = $testCases;
 							$summaryTestCase = $testCases;
@@ -363,7 +363,7 @@ $testSuite100 = array();
 		*/
 		echo '<pre>';
 		//var_dump($testSuite100);
-		
+
 		foreach ($testSuite100 as $testSuite) {
 			echo '&lt;testsuite name="'.$testSuite['name'].'"&gt;<br>';
 			echo '	&lt;directory&gt;'.$testSuite['dir'].'&lt;/directory&gt;<br>';
@@ -392,10 +392,10 @@ $testSuite100 = array();
 		echo '</pre>';
 		?>
 
-	
+
 	</body>
 </html>
-<?php 
+<?php
 /*echo count($arrLogs['testsuite']);
 echo '<pre>';
 print_r($arrLogs);

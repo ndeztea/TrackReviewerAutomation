@@ -1,12 +1,12 @@
-<?php 
+<?php
 	require_once (__DIR__.'/../../library/core.php');
 
 	class verifyTrackingOrderContact extends Core
-	{	
+	{
 		var $asinID = 'B012E9DMNQ';
 		// master ASIN B01DJ7XNJA
 		var $asinIDarr = array('B012E9DMNQ','B01DKQP5KK','B01DDQXRWU','B01DKQAXC0') ; //B01DKQJP2E (DONE)
-		
+
 		var $product = 'Deodorant';
 		var $username = 'dimas@ijoomla.com';
 		var $password = 'Soreang123!';
@@ -14,7 +14,7 @@
 		var $reviewPage = 'https://www.amazon.com/product-reviews/B01DKQJP2E/ref=cm_cr_arp_d_viewopt_srt?ie=UTF8&refRID=19FKR70FR24JJR7C415D&pageNumber=1&sortBy=recent&reviewerType=all_reviews&filterByStar=';
 		var $rating;
 		var $reviewID;
-		
+
 		var $arrReviewerId = array();
 
 		var $connection;
@@ -29,16 +29,16 @@
 
 
 		public function _getOrderId($review,$nextPage=false){
-			$this->connection =  mysql_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
-			if(!$this->connection){
-				echo 'cant connect';
-				exit;
-			}
-			if(!mysql_select_db(MYSQL_DB)){
+			// $this->connection =  mysqli_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
+			// if(!$this->connection){
+			// 	echo 'cant connect';
+			// 	exit;
+			// }
+			if(!mysqli_select_db($this->connection, MYSQL_DB)){
 				echo 'cant select BD';
 				exit;
 			}
-			
+
 			$reviewerID = $review['reviewerID'];
 			$reviewDate = $review['reviewDate'];
 			$noNext = false;
@@ -48,7 +48,7 @@
 				$this->select($this->byName('searchType'))->selectOptionByValue('ASIN');
 				$this->byName('searchKeyword')->value($this->asinID);
 				//$this->select($this->byName('preSelectedRange'))->selectOptionByValue('365');
-				
+
 				// calculate date
 				//$reviewDateFormatBegin = date('Y-m-d',strtotime($reviewDate));
 				$this->byId('exactDateBegin')->click();
@@ -79,9 +79,9 @@
 					$noNext = true;
 				}
 			}
-			
+
 			sleep(5);
-			
+
 			/*
 			if ( strpos((string)$source,$reviewerID) == FALSE){
 				$this->_getOrderId($reviewerID, true);
@@ -102,8 +102,8 @@
 					$this->_getOrderId($review, true);
 				}
 			}
-			
-			
+
+
 
 			// now get the user information
 			if($orderID!='undefined'){
@@ -113,7 +113,7 @@
 					$record['orderID'] = $orderID;
 
 					echo '####in-'.$reviewerID.'-'.$this->url().'#####';
-					
+
 					try{
 						$record['orderDate'] = $this->byId('myo-order-details-purchase-date')->text();
 					}catch(exception $e){
@@ -133,30 +133,30 @@
 					}catch(exception $e){
 						$record['contact'] = $this->url();
 					}
-					
+
 					$sql = "UPDATE reviewer_contact SET ASIN='".$this->asinID."',orderID='".$record['orderID']."',orderDate='".$record['orderDate']."',contact='".$record['contact']."' WHERE reviewerID='".$record['reviewerID']."'	;";
 					echo $sql;
-					mysql_query($sql);
+					mysqli_query($this->connection, $sql);
 				}catch(exception $e){
 					//
 					echo '!!ERRRO ('.$reviewerID.')!!';
 				}
 			}
-			
-			
+
+
 		}
 
-		
+
 
 		public function testReviewerContactOneStar(){
 			$this->startTestCase('testReviewerContactOneStar','Get Reviwer contact from 1 star');
-			
-			$this->connection =  mysql_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
+
+			$this->connection =  mysqli_connect(MYSQL_HOST,MYSQL_USERNAME,MYSQL_PASSWORD);
 			if(!$this->connection){
 				echo 'cant connect';
 				exit;
 			}
-			if(!mysql_select_db(MYSQL_DB)){
+			if(!mysqli_select_db($this->connection, MYSQL_DB)){
 				echo 'cant select BD';
 				exit;
 			}
@@ -165,28 +165,28 @@
 
 			foreach ($this->asinIDarr  as $asin) {
 				$this->asinID = $asin;
-				$sql = mysql_query('SELECT reviewerID,reviewDate FROM reviewer_contact WHERE contact="" AND reviewDate>"2016-04-07" order BY reviewDate DESC') or die(mysql_error());
-				while ($row = mysql_fetch_array($sql)) {
+				$sql = mysqli_query($this->connection, 'SELECT reviewerID,reviewDate FROM reviewer_contact WHERE contact="" AND reviewDate>"2016-04-07" order BY reviewDate DESC') or die(mysqli_error());
+				while ($row = mysqli_fetch_array($sql)) {
 					try{
 						$this->_getOrderId($row);
 					}catch(exception $e){
 						// nothing
 					}
-				   
+
 				}
 			}
-			
 
-			/*$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=2');
-			while ($row = mysql_fetch_array($sql, MYSQL_ASSOC)) {
+
+			/*$sql = mysqli_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=2');
+			while ($row = mysqli_fetch_array($sql, MYSQL_ASSOC)) {
 			   $this->_getOrderId($row['reviewerID']);
 			}
 
-			$sql = mysql_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=3');
-			while ($row = mysql_fetch_array($sql, MYSQL_ASSOC)) {
+			$sql = mysqli_query('SELECT reviewerID FROM reviewer_contact WHERE orderID=0 AND rating=3');
+			while ($row = mysqli_fetch_array($sql, MYSQL_ASSOC)) {
 			   $this->_getOrderId($row['reviewerID']);
 			}*/
-			
+
 		}
 	}
 ?>
